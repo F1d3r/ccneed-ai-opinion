@@ -60,9 +60,7 @@
 
     .site-header { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid var(--line); background: #fff; }
     .nav { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-    .brand { min-height: 44px; display: inline-flex; align-items: center; gap: 12px; color: var(--text); font-size: 24px; font-weight: 750; letter-spacing: -.045em; text-decoration: none; }
-    .brand-mark { width: 36px; height: 36px; }
-    .brand small { color: var(--signal); font-size: 18px; font-weight: 700; }
+    .brand { min-height: 44px; display: inline-flex; align-items: center; color: var(--text); font-size: 24px; font-weight: 750; letter-spacing: -.045em; text-decoration: none; }
     .nav-links { display: flex; align-items: center; gap: 34px; }
     .nav-links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--muted); font-size: 15px; font-weight: 500; text-decoration: none; transition: color .2s ease, transform .2s cubic-bezier(.3,0,0,1); }
     .nav-links a:hover { color: var(--signal); }
@@ -88,13 +86,16 @@
     .hero-proof span + span::before { content: "·"; margin-right: 18px; color: #91A0B5; }
     .hero-proof strong { color: var(--signal); font: 650 17px var(--font-num); }
 
-    .hero-visual-stage { position: relative; min-width: 0; padding: 10px 0 70px; }
-    .hero-blue-card { position: relative; min-height: 620px; padding: 54px 34px 46px; overflow: hidden; isolation: isolate; border-radius: 46px; background: var(--visual-blue); }
+    .hero-visual-stage { position: relative; min-width: 0; padding: 10px 0; }
+    .hero-blue-card { position: relative; min-height: 620px; padding: 26px 34px 46px; overflow: hidden; isolation: isolate; border-radius: 46px; background: var(--visual-blue); }
     .hero-blue-card::before, .hero-blue-card::after { content: ""; position: absolute; z-index: -1; border: 1px solid #FFFFFF42; border-radius: 50%; pointer-events: none; }
     .hero-blue-card::before { width: 390px; height: 390px; top: -190px; right: -85px; }
     .hero-blue-card::after { width: 190px; height: 190px; bottom: -96px; left: -48px; }
-    .signal-mark { position: absolute; top: 26px; left: 36px; display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .03em; }
+    .visual-toolbar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 2px 18px; }
+    .signal-mark { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .03em; }
     .signal-mark::before { content: ""; width: 9px; height: 9px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 6px #FFFFFF22; }
+    .monitor-status { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; background: #fff; color: var(--signal); font-size: 12px; font-weight: 650; line-height: 1.35; white-space: nowrap; }
+    .monitor-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 4px #045AFE18; }
     .platform-showcase { position: relative; z-index: 1; min-width: 0; padding: 24px; scroll-margin-top: 104px; border: 1px solid #FFFFFFB8; border-radius: 28px; background: #fff; box-shadow: 0 28px 64px #003B9B40; }
     .platform-showcase-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 18px; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
     .platform-showcase-head h2 { margin: 0; font-size: 21px; font-weight: 650; line-height: 1.45; }
@@ -109,17 +110,6 @@
     .platform-name { min-width: 0; color: var(--text); font-size: 13px; font-weight: 550; line-height: 1.35; overflow-wrap: anywhere; }
     .platform-note { display: grid; gap: 3px; margin: 17px 0 0; padding-top: 15px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.65; }
     .platform-note strong { color: var(--signal); font-weight: 600; }
-    .floating-layer { position: absolute; z-index: 4; pointer-events: none; }
-    .floating-layer-primary { right: -24px; top: 68px; }
-    .floating-layer-secondary { left: -34px; bottom: 0; }
-    .floating-card { min-width: 158px; display: flex; align-items: center; gap: 11px; padding: 15px 17px; border: 1px solid #D5E3F7; border-radius: 18px; background: #fff; color: var(--text); box-shadow: 0 18px 42px #00347826; animation: float-layer 4.5s ease-in-out infinite; }
-    .floating-layer-secondary .floating-card { animation-delay: -2.25s; }
-    .floating-icon { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--light-blue); color: var(--signal); }
-    .floating-icon svg { width: 17px; height: 17px; }
-    .floating-copy { display: grid; gap: 1px; }
-    .floating-copy strong { font-size: 14px; font-weight: 650; line-height: 1.35; }
-    .floating-copy span { color: var(--muted); font-size: 11px; }
-
     #deliverables { scroll-margin-top: 78px; }
     .delivery-experience { min-width: 0; }
     .delivery-tabs { display: none; align-items: center; gap: 34px; margin-bottom: 26px; border-bottom: 1px solid var(--line); }
@@ -245,7 +235,6 @@
     .js .reveal[data-reveal-delay="2"] { --reveal-delay: 160ms; }
     .js .reveal.is-visible { opacity: 1; transform: none; }
     @keyframes amount-swap { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-    @keyframes float-layer { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 
     @media (max-width: 1080px) {
       .hero-grid { grid-template-columns: minmax(0,42fr) minmax(0,58fr); gap: 38px; }
@@ -269,10 +258,7 @@
       .hero-lead { max-width: 650px; }
       .hero-copy { max-width: 700px; }
       .hero-visual { width: 100%; max-width: 720px; margin-inline: auto; }
-      .hero-visual-stage { padding-bottom: 18px; }
       .hero-blue-card { min-height: 0; }
-      .floating-layer-primary { right: 18px; }
-      .floating-layer-secondary { display: none; }
       .delivery-panel { grid-template-columns: minmax(0,1fr); min-height: 0; }
       .delivery-copy { padding: 8px; }
       .delivery-visual { min-height: 390px; grid-template-rows: minmax(0,1fr) auto; gap: 12px; place-items: stretch; padding: 24px; }
@@ -287,7 +273,6 @@
       .container { width: calc(100% - 48px); }
       .nav-links a:not(.nav-cta) { display: none; }
       .brand { font-size: 21px; }
-      .brand-mark { width: 32px; height: 32px; }
       .nav-links .nav-cta { min-height: 44px; padding: 8px 17px; }
       .hero { padding-block: 54px 82px; }
       .hero h1 { font-size: 36px; line-height: 1.28; }
@@ -298,11 +283,14 @@
       .hero-proof { gap: 5px 10px; margin-top: 22px; font-size: 12px; }
       .hero-proof span + span::before { margin-right: 10px; }
       .hero-proof strong { font-size: 14px; }
-      .hero-visual-stage { padding-bottom: 94px; }
-      .hero-blue-card { padding: 46px 16px 18px; border-radius: 30px; }
+      .hero-blue-card { padding: 18px 16px; border-radius: 30px; }
       .hero-blue-card::before { width: 220px; height: 220px; top: -130px; right: -75px; }
       .hero-blue-card::after { display: none; }
-      .signal-mark { top: 18px; left: 24px; font-size: 11px; }
+      .visual-toolbar { gap: 10px; margin: 0 5px 14px; }
+      .signal-mark { gap: 7px; font-size: 11px; }
+      .signal-mark::before { width: 7px; height: 7px; box-shadow: 0 0 0 4px #FFFFFF22; }
+      .monitor-status { gap: 6px; padding: 6px 10px; font-size: 11px; }
+      .monitor-status::before { width: 6px; height: 6px; box-shadow: 0 0 0 3px #045AFE18; }
       .platform-showcase { padding: 15px; border-radius: 22px; }
       .platform-showcase-head { gap: 9px; }
       .platform-showcase-head h2 { font-size: 17px; }
@@ -314,10 +302,6 @@
       .platform-logo svg { width: 18px; height: 18px; }
       .platform-name { font-size: 12px; }
       .platform-note { font-size: 12px; line-height: 1.6; }
-      .floating-layer-primary { top: auto; right: 16px; bottom: 10px; }
-      .floating-layer-secondary { display: none; }
-      .floating-card { min-width: 142px; padding: 12px 14px; border-radius: 16px; }
-      .floating-icon { width: 30px; height: 30px; }
       .section-title { font-size: 32px; }
       .section-lead { font-size: 16px; }
       .section-heading { margin-bottom: 34px; }
@@ -362,7 +346,7 @@
       @page { size: A4; margin: 13mm; }
       * { animation: none !important; transition: none !important; box-shadow: none !important; }
       html, body { background: #fff !important; color: var(--text) !important; font-size: 11pt; }
-      .site-header, .hero-actions, .config-panel, .quote-actions, .skip-link, .quote-status, .manual-copy, .floating-layer, .delivery-tabs { display: none !important; }
+      .site-header, .hero-actions, .config-panel, .quote-actions, .skip-link, .quote-status, .manual-copy, .delivery-tabs { display: none !important; }
       .section, .hero { min-height: 0; padding-block: 0; background: #fff !important; overflow: visible; }
       #deliverables, #pricing { break-before: page; }
       .container { width: 100%; }
@@ -373,7 +357,7 @@
       .hero-visual { display: block; margin-top: 12px; }
       .hero-visual-stage { padding: 0; }
       .hero-blue-card { min-height: 0; padding: 10px; overflow: visible; border: 1px solid #999; border-radius: 12px; background: #fff !important; }
-      .signal-mark { display: none; }
+      .visual-toolbar { display: none; }
       .platform-showcase { padding: 12px; }
       .platform-showcase-head { margin-bottom: 8px; padding-bottom: 8px; }
       .platform-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
@@ -411,14 +395,7 @@
 
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="#top" aria-label="CCNeed AI 首页">
-        <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true">
-          <circle cx="18" cy="18" r="16" fill="none" stroke="#045AFE" stroke-width="2"></circle>
-          <circle cx="18" cy="18" r="5" fill="#0066FF"></circle>
-          <path d="M3 18h10M23 18h10M18 3v10M18 23v10" stroke="#BBD1F5" stroke-width="2"></path>
-        </svg>
-        <span>CCNeed <small>AI</small></span>
-      </a>
+      <a class="brand" href="#top" aria-label="ccneed 首页"><span>ccneed</span></a>
       <nav class="nav-links" aria-label="主要导航">
         <a href="#platforms">支持平台</a>
         <a href="#deliverables">交付内容</a>
@@ -441,13 +418,16 @@
             </a>
             <a class="button button-secondary" href="#deliverables">查看交付内容</a>
           </div>
-          <p class="hero-proof"><span><strong>5 万元／季度起</strong></span><span>每小时监测</span><span>每天交付</span></p>
+          <p class="hero-proof"><span><strong>5 万元／季度起</strong></span><span>实时监控</span><span>原文可追溯</span></p>
         </div>
 
         <div class="hero-visual reveal" data-reveal-delay="1">
           <div class="hero-visual-stage">
             <div class="hero-blue-card">
-              <div class="signal-mark">舆情信号工作台</div>
+              <div class="visual-toolbar">
+                <div class="signal-mark">舆情信号工作台</div>
+                <div class="monitor-status">实时监控</div>
+              </div>
               <div class="platform-showcase lift" id="platforms" aria-labelledby="platforms-title">
             <div class="platform-showcase-head">
               <div><h2 id="platforms-title">支持监测的社媒平台</h2><p>国内 7 个 · 海外 5 个</p></div>
@@ -468,18 +448,6 @@
               <div class="platform-card"><span class="platform-logo" style="--brand-color:#FF0069"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"></path></svg></span><span class="platform-name">Instagram</span></div>
             </div>
                 <p class="platform-note"><span><strong>公开网页：</strong>还可监测新闻、网站与论坛等搜索引擎可检索内容，单独核价。</span><span>平台名称与标识仅用于说明支持监测范围，不代表官方合作。</span></p>
-              </div>
-            </div>
-            <div class="floating-layer floating-layer-primary" aria-hidden="true">
-              <div class="floating-card">
-                <span class="floating-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v5l3 2"></path></svg></span>
-                <span class="floating-copy"><strong>每小时监测</strong><span>持续捕捉讨论变化</span></span>
-              </div>
-            </div>
-            <div class="floating-layer floating-layer-secondary" aria-hidden="true">
-              <div class="floating-card">
-                <span class="floating-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h14v16H5z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span>
-                <span class="floating-copy"><strong>每天交付</strong><span>结论、证据与明细</span></span>
               </div>
             </div>
           </div>

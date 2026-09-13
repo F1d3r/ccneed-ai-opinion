@@ -171,6 +171,16 @@ try {
     JSON.stringify(navLinks)
   );
 
+  const brandData = await evaluate(`(() => {
+    const brand = document.querySelector('.brand');
+    return {
+      text: brand?.textContent.trim() || '',
+      label: brand?.getAttribute('aria-label') || '',
+      hasExtraMark: Boolean(brand?.querySelector('svg,img,.brand-mark,small'))
+    };
+  })()`);
+  check("header brand is the standalone lowercase ccneed wordmark", brandData.text === "ccneed" && brandData.label === "ccneed 首页" && !brandData.hasExtraMark, JSON.stringify(brandData));
+
   const colors = await evaluate(`(() => {
     const style = selector => {
       const node = document.querySelector(selector);
@@ -242,18 +252,24 @@ try {
   })()`);
   check("hero visibly keeps all 12 platform logos and names", platformData.inHero && platformData.inBlueCard && platformData.visible && platformData.logos === 12 && JSON.stringify(platformData.names) === JSON.stringify(expectedPlatforms), JSON.stringify(platformData));
 
-  const floatingData = await evaluate(`(() => {
-    const stage = document.querySelector('.hero-visual-stage');
-    const blue = stage?.querySelector('.hero-blue-card');
-    const floats = stage ? [...stage.querySelectorAll('.floating-layer')] : [];
+  const monitorData = await evaluate(`(() => {
+    const status = document.querySelector('.monitor-status');
+    const toolbar = document.querySelector('.visual-toolbar');
+    const blue = document.querySelector('.hero-blue-card');
     return {
-      count: floats.length,
-      external: Boolean(blue) && floats.every(node => !blue.contains(node)),
-      durations: floats.map(node => getComputedStyle(node.querySelector('.floating-card') || node).animationDuration)
+      count: document.querySelectorAll('.monitor-status').length,
+      text: status?.textContent.trim() || '',
+      inToolbar: Boolean(status && toolbar?.contains(status)),
+      inBlueCard: Boolean(status && blue?.contains(status)),
+      position: status ? getComputedStyle(status).position : '',
+      animation: status ? getComputedStyle(status).animationName : '',
+      floatingCount: document.querySelectorAll('.floating-layer,.floating-card').length
     };
   })()`);
-  check("hero uses one to three independently layered floating details", floatingData.count >= 1 && floatingData.count <= 3 && floatingData.external, JSON.stringify(floatingData));
-  check("decorative floats use the specified 4.5s rhythm", floatingData.durations.every(duration => duration === "4.5s"), JSON.stringify(floatingData.durations));
+  check("hero has one integrated real-time monitoring status and no floating cards", monitorData.count === 1 && monitorData.text === "实时监控" && monitorData.inToolbar && monitorData.inBlueCard && monitorData.position === "static" && monitorData.animation === "none" && monitorData.floatingCount === 0, JSON.stringify(monitorData));
+  const heroProof = await evaluate("document.querySelector('.hero-proof').innerText.replace(/\\s+/g,' ').trim()");
+  check("hero proof row says real-time monitoring without daily delivery", heroProof === "5 万元／季度起 实时监控 原文可追溯", heroProof);
+  check("daily delivery remains in the formal deliverables and quote", await evaluate("document.getElementById('deliverables').innerText.includes('每天交付') && document.querySelector('.quote-block').innerText.includes('每天交付')"));
   const motionTimings = await evaluate(`(() => {
     const probe = document.createElement('div');
     probe.className = 'reveal';
@@ -447,12 +463,11 @@ try {
   await cdp("Input.dispatchMouseEvent", { type: "mouseMoved", x: heroButtonPoint.x, y: heroButtonPoint.y });
   const reducedMotion = await evaluate(`(() => ({
     reveals: [...document.querySelectorAll('.reveal')].every(node => getComputedStyle(node).opacity === '1' && getComputedStyle(node).transitionDuration === '0s'),
-    floats: [...document.querySelectorAll('.floating-card')].every(node => getComputedStyle(node).animationName === 'none'),
     lifts: [...document.querySelectorAll('.lift')].every(node => getComputedStyle(node).transitionDuration === '0s'),
     tabs: [...document.querySelectorAll('.delivery-panel')].every(node => getComputedStyle(node).transitionDuration === '0s'),
     hoveredButtonStatic: getComputedStyle(document.querySelector('.hero .button-primary')).transform === 'none'
   }))()`);
-  check("reduced-motion disables reveal, float, hover and tab movement", reducedMotion.reveals && reducedMotion.floats && reducedMotion.lifts && reducedMotion.tabs && reducedMotion.hoveredButtonStatic, JSON.stringify(reducedMotion));
+  check("reduced-motion disables reveal, hover and tab movement", reducedMotion.reveals && reducedMotion.lifts && reducedMotion.tabs && reducedMotion.hoveredButtonStatic, JSON.stringify(reducedMotion));
 
   await cdp("Emulation.setEmulatedMedia", { media: "print" });
   await navigate();
@@ -483,10 +498,13 @@ try {
       const visual = document.querySelector('.hero-visual').getBoundingClientRect();
       const container = document.querySelector('.hero .container').getBoundingClientRect();
       const blue = document.querySelector('.hero-blue-card');
-      const visibleFloatNodes = [...document.querySelectorAll('.floating-layer')].filter(node => getComputedStyle(node).display !== 'none');
-      const visibleFloats = visibleFloatNodes.length;
+      const blueRect = blue?.getBoundingClientRect();
+      const toolbar = document.querySelector('.visual-toolbar');
+      const toolbarRect = toolbar?.getBoundingClientRect();
+      const monitor = document.querySelector('.monitor-status');
+      const monitorRect = monitor?.getBoundingClientRect();
+      const platformShowcaseRect = document.querySelector('.platform-showcase')?.getBoundingClientRect();
       const platformNote = document.querySelector('.platform-note');
-      const platformNoteRect = platformNote?.getBoundingClientRect();
       const visualCaption = document.querySelector('.delivery-panel[data-active="true"] .visual-caption') || document.querySelector('.visual-caption');
       const visualCaptionRect = visualCaption?.getBoundingClientRect();
       const productWindow = visualCaption?.parentElement?.querySelector('.product-window');
@@ -512,12 +530,12 @@ try {
         copyBeforeVisual: copy.top < visual.top,
         containerX: container.x,
         radius: blue ? parseFloat(getComputedStyle(blue).borderRadius) : 0,
-        visibleFloats,
-        floatsWithinViewport: visibleFloatNodes.every(node => {
-          const rect = node.getBoundingClientRect();
-          return rect.left >= 0 && rect.right <= innerWidth;
-        }),
-        floatOverlapsPlatformNote: visibleFloatNodes.some(node => intersects(node.getBoundingClientRect(), platformNoteRect)),
+        monitorContained: Boolean(monitorRect && toolbarRect && blueRect) &&
+          monitorRect.left >= toolbarRect.left && monitorRect.right <= toolbarRect.right &&
+          monitorRect.top >= toolbarRect.top && monitorRect.bottom <= toolbarRect.bottom &&
+          monitorRect.left >= blueRect.left && monitorRect.right <= blueRect.right &&
+          monitorRect.top >= blueRect.top && monitorRect.bottom <= blueRect.bottom,
+        monitorClearOfShowcase: Boolean(monitorRect && platformShowcaseRect) && !intersects(monitorRect, platformShowcaseRect),
         platformNoteFont: platformNote ? parseFloat(getComputedStyle(platformNote).fontSize) : 0,
         captionClear: Boolean(visualCaptionRect && deliveryVisualRect && productWindowRect) &&
           visualCaptionRect.left >= deliveryVisualRect.left && visualCaptionRect.right <= deliveryVisualRect.right &&
@@ -534,19 +552,15 @@ try {
       };
     })()`);
     check(`${width}px has no horizontal overflow`, responsive.overflow, JSON.stringify(responsive));
-    if (width === 1440) check("desktop hero floats stay clear of platform disclaimer copy", !responsive.floatOverlapsPlatformNote, JSON.stringify(responsive));
+    check(`${width}px keeps real-time monitoring inside the visual toolbar`, responsive.monitorContained && responsive.monitorClearOfShowcase, JSON.stringify(responsive));
     if (width <= 1024) {
       check(`${width}px stacks hero copy before visual`, responsive.copyBeforeVisual, JSON.stringify(responsive));
       check(`${width}px uses a non-sticky quote card`, responsive.quotePosition === "static", responsive.quotePosition);
-      check(`${width}px keeps hero floats inside the viewport`, responsive.floatsWithinViewport, JSON.stringify(responsive));
       check(`${width}px gives the product-interface caption its own clear blue gutter`, responsive.captionClear, JSON.stringify(responsive));
     }
-    if (width === 1024 || width === 768) check(`${width}px reduces the stacked hero to one float`, responsive.visibleFloats === 1, JSON.stringify(responsive));
     if (width === 390) {
       check("390px uses 24px page gutters", Math.abs(responsive.containerX - 24) <= 1, String(responsive.containerX));
       check("390px uses a 24–32px visual radius", responsive.radius >= 24 && responsive.radius <= 32, String(responsive.radius));
-      check("390px reduces floating layers", responsive.visibleFloats <= 2, String(responsive.visibleFloats));
-      check("390px keeps the hero float clear of the platform disclaimer", !responsive.floatOverlapsPlatformNote, JSON.stringify(responsive));
       check("390px keeps the platform disclaimer at least 12px", responsive.platformNoteFont >= 12, String(responsive.platformNoteFont));
       check("390px gives the product-interface caption its own clear blue gutter", responsive.captionClear, JSON.stringify(responsive));
       check("390px keeps 按平台 together", responsive.pricingTermLines === 1, String(responsive.pricingTermLines));
